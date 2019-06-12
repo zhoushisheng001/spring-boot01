@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhuguang.zhou.mapper.ContrabandMapper">
+    <resultMap id="BaseResultMap" type="com.zhuguang.zhou.pojo.Contraband">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="contraband_name" jdbcType="VARCHAR" property="contrabandName"/>
+        <result column="landable" jdbcType="VARCHAR" property="landable"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="enabled_flag" jdbcType="INTEGER" property="enabledFlag"/>
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy"/>
+        <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate"/>
+        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy"/>
+        <result column="updation_date" jdbcType="TIMESTAMP" property="updationDate"/>
+        <result column="trace_id" jdbcType="VARCHAR" property="traceId"/>
+    </resultMap>
+
+    <resultMap id="SearchResultMap" type="com.zhuguang.zhou.pojo.Contraband" extends="BaseResultMap">
+        <result column="creation_date_str" jdbcType="VARCHAR" property="creationDateStr" />
+        <result column="updation_date_str" jdbcType="VARCHAR" property="updationDateStr" />
+    </resultMap>
+
+    <sql id ="GenerationType">IDENTITY(IDENTITY)</sql>
+    <sql id="BaseTable">
+        contraband
+    </sql>
+    
+    <select id="search" resultMap="SearchResultMap">
+          SELECT
+            id, contraband_name,landable,
+            remark, enabled_flag,created_by,
+            creation_date,updated_by, updation_date,
+            trace_id,DATE_FORMAT(creation_date,'%Y-%m-%d %H:%i') creation_date_str,
+            DATE_FORMAT(updation_date,'%Y-%m-%d %H:%i') updation_date_str
+       FROM  contraband
+       where enabled_flag = 1
+    </select>
+
+    <select id="queryList" parameterType="java.util.List" resultMap="BaseResultMap">
+      SELECT id,contraband_name,landable,remark,created_by,creation_date,updated_by,updation_date,trace_id
+      FROM contraband
+      WHERE enabled_flag = '1'
+      AND contraband_name IN
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+          #{item.contrabandName}
+        </foreach>
+    </select>
+</mapper>
